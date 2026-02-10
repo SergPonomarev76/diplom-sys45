@@ -98,5 +98,7 @@ Cоздайте ВМ, разверните на ней Elasticsearch. Устан
 2. Откладывание выполнения дипломной работы на последний момент.
 3. Ожидание моментального ответа на свой вопрос. Дипломные руководители — работающие инженеры, которые занимаются, кроме преподавания, своими проектами. Их время ограничено, поэтому постарайтесь задавать правильные вопросы, чтобы получать быстрые ответы :)
 
+</details>
+
 #### Дипломная работа состоит из трех частей:
-- [1. Установка и подготовка Terraform и Ansible/README.md](https://github.com/SergPonomarev76/diplom-sys45/blob/2cb3f00d2d60c36067779aadf94e179b36c44a60/1.%20%D0%A3%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%BA%D0%B0%20%D0%B8%20%D0%BF%D0%BE%D0%B4%D0%B3%D0%BE%D1%82%D0%BE%D0%B2%D0%BA%D0%B0%20Terraform%20%D0%B8%20Ansible/README.md)
+- [1. Установка и подготовка Terraform и Ansible](https://github.com/SergPonomarev76/diplom-sys45/blob/2cb3f00d2d60c36067779aadf94e179b36c44a60/1.%20%D0%A3%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%BA%D0%B0%20%D0%B8%20%D0%BF%D0%BE%D0%B4%D0%B3%D0%BE%D1%82%D0%BE%D0%B2%D0%BA%D0%B0%20Terraform%20%D0%B8%20Ansible/README.md)
