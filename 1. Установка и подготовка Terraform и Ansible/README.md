@@ -9,3 +9,20 @@ sudo cp terraform /usr/local/bin/
 sudo terraform -version
 ```
 ![](screen/screen_1_1.png)
+
+Создаю файл `.terraformrc` и добавляю блок с источником, из которого будет устанавливаться провайдер.
+```bash
+nano ~/.terraformrc
+```
+```terraform
+provider_installation {
+  network_mirror {
+    url = "https://terraform-mirror.yandexcloud.net/"
+    include = ["registry.terraform.io/*/*"]
+  }
+  direct {
+    exclude = ["registry.terraform.io/*/*"]
+  }
+}
+```
+![](screen/screen_1_2.png)
