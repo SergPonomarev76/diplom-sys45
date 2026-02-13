@@ -47,3 +47,4 @@ nano ~/meta.yaml
     ssh-authorized-keys:
       - ssh-ed25519
 ```
+![](screen/screen_1_4.png)
