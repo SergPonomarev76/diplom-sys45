@@ -2,7 +2,7 @@
 ### 2.1 Заполнение конфигурационного файла terraform `main.tf` для выполнения задач дипломной работы.
 Ссылки на файлы terraform: 
 
-[main.tf](files/main.tf)
+[main.tf](/files/main.tf)
 
 [meta.yaml](/meta.yaml)
 
