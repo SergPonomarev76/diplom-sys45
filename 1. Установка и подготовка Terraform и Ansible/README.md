@@ -48,3 +48,49 @@ nano ~/meta.yaml
       - ssh-ed25519
 ```
 ![](screen/screen_1_4.png)
+Создаю `playbook Terraform` c блоком провайдера.
+```bash
+nano ~/main.tf
+```
+```terraform
+terraform {
+  required_providers {
+    yandex = {
+      source = "yandex-cloud/yandex"
+    }
+  }
+}
+```
+![](screen/screen_1_5.png)
+Инициализирую провайдера.
+```bash
+terraform-diplom init
+```
+![](screen/screen_1_6.png)
+
+#### Terraform готов к использованию. Продолжение в основной части.
+
+---
+### 1.2 Установка и подготовка Ansible.
+Устанавливаю Ansible и проверяю версию.
+```bash
+sudo apt install ansible
+ansible --version
+```
+![](screen/screen_1_7.png)
+
+Создаю полностью прокомментированный пример `ansible.cfg` и заменяю содержимое файла на необходимые опции. Файл прикреплю в основной части.
+```bash
+ansible-config init --disabled > ansible.cfg
+nano ~/ansible.cfg
+```
+![](screen/screen_1_8.png)
+Создаю файл `hosts` и добавляю в него начальные данные. Файл прикреплю в основной части.
+
+```bash
+nano ~/hosts
+```
+#### Ansible готов к использованию. Продолжение в основной части.
+
+[Ссылка на основную часть дипломной работы.](https://github.com/README.md)
+---
