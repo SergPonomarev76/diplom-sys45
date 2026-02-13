@@ -300,7 +300,7 @@ resource "yandex_compute_instance" "bastion" {
 
   boot_disk {
     initialize_params {
-      image_id = "fd8mg6q8ujdpfh58k2bk"
+      image_id = "fd8guj6msrcbvtm0bq5d"
       size     = 10
     }
   }
@@ -334,7 +334,7 @@ resource "yandex_compute_instance" "nginx-web-1" {
 
   boot_disk {
     initialize_params {
-      image_id = "fd8mg6q8ujdpfh58k2bk"
+      image_id = "fd8guj6msrcbvtm0bq5d"
       size     = 10
     }
   }
@@ -367,7 +367,7 @@ resource "yandex_compute_instance" "nginx-web-2" {
 
   boot_disk {
     initialize_params {
-      image_id = "fd8mg6q8ujdpfh58k2bk"
+      image_id = "fd8guj6msrcbvtm0bq5d"
       size     = 10
     }
   }
@@ -504,7 +504,7 @@ resource "yandex_compute_instance" "zabbix" {
 
   boot_disk {
     initialize_params {
-      image_id = "fd8mg6q8ujdpfh58k2bk"
+      image_id = "fd8guj6msrcbvtm0bq5d"
       size     = 10
     }
   }
@@ -538,7 +538,7 @@ resource "yandex_compute_instance" "elasticsearch" {
 
   boot_disk {
     initialize_params {
-      image_id = "fd8mg6q8ujdpfh58k2bk"
+      image_id = "fd8guj6msrcbvtm0bq5d"
       size     = 10
     }
   }
@@ -571,7 +571,7 @@ resource "yandex_compute_instance" "kibana" {
 
   boot_disk {
     initialize_params {
-      image_id = "fd8mg6q8ujdpfh58k2bk"
+      image_id = "fd8guj6msrcbvtm0bq5d"
       size     = 10
     }
   }
