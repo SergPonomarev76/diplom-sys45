@@ -92,5 +92,5 @@ nano ~/hosts
 ```
 #### Ansible готов к использованию. Продолжение в основной части.
 
-[Ссылка на основную часть дипломной работы.](https://github.com/README.md)
+[Ссылка на основную часть дипломной работы.](https://github.com/SergPonomarev76/diplom-sys45/blob/fed03283d2c8b382051f7ff96e8ccbafae5a434a/2.%20%D0%9E%D1%81%D0%BD%D0%BE%D0%B2%D0%BD%D0%B0%D1%8F%20%D1%87%D0%B0%D1%81%D1%82%D1%8C%20%D0%B4%D0%B8%D0%BF%D0%BB%D0%BE%D0%BC%D0%BD%D0%BE%D0%B9%20%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D1%8B/README.md)
 ---
