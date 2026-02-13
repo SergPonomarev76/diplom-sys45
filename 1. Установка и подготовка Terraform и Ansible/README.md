@@ -32,6 +32,7 @@ provider_installation {
 ssh-keygen -t ed25519
 ```
 ![](screen/screen_1_3.png)
+
 Создаю файл `meta.yaml` с данными пользователя на создаваемые ВМ.
 ```bash
 nano ~/meta.yaml
