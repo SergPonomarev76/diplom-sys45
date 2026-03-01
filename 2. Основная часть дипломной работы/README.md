@@ -905,7 +905,8 @@ ansible_ssh_common_args='-o ProxyCommand="ssh -W %h:%p -q serg@158.160.173.246"'
       systemctl start elasticsearch.service
 ```
 
-![png](screen/screen_2_17..png) 
+![png](screen/screen_2_17.png) 
+
 Разворачиваю на другой ВМ Kibana, конфигурирую соединение с Elasticsearch и добавляю параметр `server.publicBaseUrl: "http://158.160.170.10:5601"` в конфигурационный файл `kibana.yml` 
 
 ```ansible
