@@ -1017,7 +1017,7 @@ ansible_ssh_common_args='-o ProxyCommand="ssh -W %h:%p -q serg@158.160.173.246"'
       systemctl enable filebeat.service
       systemctl start filebeat.service
 ```
-![png](screen/creen_2_20.png)
+![png](screen/screen_2_20.png)
 
 #### Все сервисы через ansible развернуты.
 
