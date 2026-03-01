@@ -1054,32 +1054,32 @@ curl -v 158.160.143.144:80
 
 Создаю Template, а точнее редактирую наиболее подходящий, с необходимыми метриками.
 
-![png](screen/35.png)
+![png](screen/screen_2_29.png)
 
 Добавляю сервера.
 
-![png](screens/36.png)
+![png](screens/screen_2_30.png)
 
 Настраиваю дешборды с отображением метрик, c минимальным набором 
 
-![png](screen/37.png)
+![png](screen/screen_2_31.png)
 
 ##### Логи.
 Захожу в kibana `http://158.160.170.10:5601/`
 
-![png](screen/38.png)
+![png](screen/screen_2_32.png)
 
 Создаю Index patterns.
 
-![png](screen/39.png)
-![png](screen/40.png)
-![png](screen/41.png)
-![png](screen/42.png)
+![png](screen/screen_2_33.png)
+![png](screen/screen_2_34.png)
+![png](screen/screen_2_35.png)
+
 
 Логи отправляются.
 
-![png](screen/43.png)
-![png](screen/44.png)
+![png](screen/screen_2_36.png)
+![png](screen/screen_2_37.png)
 
 ##### Резервное копирование.
 Резервное копирование настроено на 1:30.
