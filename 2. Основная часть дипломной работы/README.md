@@ -4,9 +4,9 @@
 
 [main.tf](./files/main.tf)
 
-[meta.yaml](/meta.yaml)
+[meta.yaml](./files/meta.yaml)
 
-[terraformrc](/terraformrc)
+[terraformrc](./files/terraformrc)
 
 #### По условиям задачи необходимо развернуть через terraform следующий ресурcы:
 
