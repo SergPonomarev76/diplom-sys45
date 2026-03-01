@@ -1039,20 +1039,18 @@ curl -v 158.160.143.144:80
 
 ##### Мониторинг.
 Проверка работы Zabbix. Перехожу на страницу с Zabbix `http://158.160.195.137/zabbix`.
+И произвожу первоночальную настройку
 
-![png](screen/27.png)
-![png](screen/28.png)
-![png](screen/29.png)
-![png](screen/30.png)
-![png](screen/31.png)
-![png](screen/32.png)
-![png](screen/33.png)
+![png](screen/screen_2_24.png)
+![png](screen/screen_2_25.png)
+![png](screen/screen_2_26.png)
+![png](screen/screen_2_27.png)
 
 Логин: Admin
 
 Пароль: zabbix
 
-![png](screen/34.png)
+![png](screen/screen_2_28.png)
 
 Создаю Template, а точнее редактирую наиболее подходящий, с необходимыми метриками.
 
