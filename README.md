@@ -103,5 +103,5 @@ Cоздайте ВМ, разверните на ней Elasticsearch. Устан
 #### Дипломная работа состоит из трех частей:
 - [1 Установка и подготовка Terraform и Ansible.](https://github.com/SergPonomarev76/diplom-sys45/blob/main/1.%20Установка%20и%20подготовка%20Terraform%20и%20Ansible/README.md)
 - [2 Основная часть дипломной работы.](https://github.com/SergPonomarev76/diplom-sys45/blob/main/2.%20Основная%20часть%20дипломной%20работы/README.md)
-- [3 Заключительная часть дипломной работы.](hhttps://github.com/SergPonomarev76/diplom-sys45/blob/main/3.%20Заключительная%20часть%20дипломной%20работы/README.md)
+- [3 Заключительная часть дипломной работы.](https://github.com/SergPonomarev76/diplom-sys45/blob/main/3.%20Заключительная%20часть%20дипломной%20работы/README.md)
 
