@@ -6,7 +6,7 @@
 
 [meta.yaml](/meta.yaml)
 
-[.terraformrc](/terraformrc)
+[terraformrc](/terraformrc)
 
 #### По условиям задачи необходимо развернуть через terraform следующий ресурcы:
 
