@@ -659,3 +659,48 @@ terraform-diplom apply
 #### Все ресурсы через terraform развернуты и работают. 
 
 ---
+### 2.4 Заполнение конфигурационного файла ansible `ansible.cfg` и inventory `hosts` для выполнения задач дипломной работы.
+
+Ссылки на файлы ansible: 
+
+[ansible.cfg](files/ansible.cfg)
+
+[hosts](files/hosts)
+
+##### `ansible.cfg`. Раскоментировал и заполнил следующие строки.
+```ansible
+inventory         =/home/serg/hosts
+host_key_checking = False
+remote_user       = serg
+private_key_file  = ~/.ssh/id_ed25519
+become            =True
+```
+##### `hosts`. Настроил подключение к ресурсам через ProxyCommand.
+```ansible
+[nginx-web]
+nginx-web-1
+nginx-web-2
+
+[zabbix]
+zabbix
+
+[elasticsearch]
+elasticsearch
+
+[kibana]
+kibana
+
+[nginx-web:vars]
+ansible_ssh_common_args='-o ProxyCommand="ssh -W %h:%p -q serg@158.160.173.246"'
+
+[zabbix:vars]
+ansible_ssh_common_args='-o ProxyCommand="ssh -W %h:%p -q serg@158.160.173.246"'
+
+[elasticsearch:vars]
+ansible_ssh_common_args='-o ProxyCommand="ssh -W %h:%p -q serg@158.160.173.246"'
+
+[kibana:vars]
+ansible_ssh_common_args='-o ProxyCommand="ssh -W %h:%p -q serg@158.160.173.246"'
+```
+
+---
