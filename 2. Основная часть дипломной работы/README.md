@@ -823,7 +823,7 @@ ansible_ssh_common_args='-o ProxyCommand="ssh -W %h:%p -q serg@158.160.173.246"'
       systemctl restart zabbix-server apache2
       systemctl enable zabbix-server apache2
 ```
-![png](screen/18.png)
+![png](screen/screen_2_15.png)
 
 На каждую ВМ устанавливаю Zabbix Agent, настраиваю агенты на отправление метрик в Zabbix.
 
@@ -865,7 +865,7 @@ ansible_ssh_common_args='-o ProxyCommand="ssh -W %h:%p -q serg@158.160.173.246"'
       systemctl restart zabbix-agent
       systemctl enable zabbix-agent
 ```
-![png](screen/19.png)
+![png](screen/screen_2_16.png)
 
 ##### Логи. Elasticsearch. Kibana. Filebeat.
 
@@ -905,9 +905,8 @@ ansible_ssh_common_args='-o ProxyCommand="ssh -W %h:%p -q serg@158.160.173.246"'
       systemctl start elasticsearch.service
 ```
 
-![png](screen/20.png) 
+![png](screen/screen_2_17..png) 
 Разворачиваю на другой ВМ Kibana, конфигурирую соединение с Elasticsearch и добавляю параметр `server.publicBaseUrl: "http://158.160.170.10:5601"` в конфигурационный файл `kibana.yml` 
-![png](screen/21.png) 
 
 ```ansible
 ---
@@ -943,7 +942,7 @@ ansible_ssh_common_args='-o ProxyCommand="ssh -W %h:%p -q serg@158.160.173.246"'
       systemctl enable kibana.service
       systemctl start kibana.service
 ```
-![png](screen/22.png)
+![png](screen/screen_2_18.png)
 
 Устанавливаю Filebeat в ВМ к веб-серверам, настраиваю на отправку access.log, error.log nginx в Elasticsearch.
 
@@ -982,7 +981,7 @@ ansible_ssh_common_args='-o ProxyCommand="ssh -W %h:%p -q serg@158.160.173.246"'
       systemctl start filebeat.service
 
 ```
-![png](screen/23.png)
+![png](screen/screen_2_19.png)
 ```ansible
 ---
 - name: "download and install filebeat for nginx-web-2"
@@ -1017,7 +1016,7 @@ ansible_ssh_common_args='-o ProxyCommand="ssh -W %h:%p -q serg@158.160.173.246"'
       systemctl enable filebeat.service
       systemctl start filebeat.service
 ```
-![png](screen/24.png)
+![png](screen/creen_2_20.png)
 
 #### Все сервисы через ansible развернуты.
 
@@ -1027,14 +1026,15 @@ ansible_ssh_common_args='-o ProxyCommand="ssh -W %h:%p -q serg@158.160.173.246"'
 
 ##### Сайт.
 Протестирую работу сайта с ip балансировщика.
+![png](screen/screen_2_21.png)
 ```bash
-curl -v 158.160.128.179:80
+curl -v 158.160.143.144:80
 ```
-![png](screen/25.png)
+![png](screen/screen_2_22.png)
 
 Этот же сайт с браузера.
 
-![png](screen/26.png)
+![png](screen/screen_2_23.png)
 
 ##### Мониторинг.
 Проверка работы Zabbix. Перехожу на страницу с Zabbix `http://158.160.195.137/zabbix`.
