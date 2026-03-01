@@ -704,3 +704,390 @@ ansible_ssh_common_args='-o ProxyCommand="ssh -W %h:%p -q serg@158.160.173.246"'
 ```
 
 ---
+### 2.5 Ansible-playbooks для установки и конфигурирования необходимых сервисов.
+
+Ссылки на файлы ansible-playbook:
+
+[playbook-nginx-web.yaml](files/playbook-nginx-web.yaml)
+
+[playbook-zabbix.yaml](files/playbook-zabbix.yaml)
+
+[playbook-zabbix-agent.yaml](files/playbook-zabbix-agent.yaml)
+
+[playbook-elasticsearch.yaml](files/files%20ansible/playbook-elasticsearch.yaml)
+
+[playbook-kibana.yaml](files/playbook-kibana.yaml)
+
+[playbook-filebeat.yaml](files/playbook-filebeat.yaml)
+
+[playbook-filebeat2.yaml](files/playbook-filebeat2.yaml)
+
+Ссылка на файл с сайтом: 
+
+[index.nginx-debian.html](files/index.nginx-ubuntu.html)
+
+Ссылки на конфигурационные файлы: 
+
+[elasticsearch.yml](files/elasticsearch.yml)
+
+[kibana.yml](files/kibana.yml)
+
+[filebeat.yml](files/filebeat.yml)
+
+[filebeat2.yml](files/filebeat2.yml)
+
+##### Сайт. Веб-сервера. Nginx.
+  
+Устанавливаю сервер nginx на 2 ВМ. Заменяю стандартный файл `index.nginx-debian.html`
+```ansible
+---
+- name: "install nginx --> replacing a file index.nginx-debian.html --> restart nginx"
+  hosts: nginx-web
+  become: true
+
+  tasks:
+  - name: "1/4 apt update"
+    apt:
+      update_cache: yes
+
+  - name: "2/4 install nginx"
+    apt:
+      name: nginx
+      state: latest
+
+  - name: "3/4 replacing a file 'index.nginx-debian.html' for nginx-web"
+    copy:
+      src: /root/index.nginx-debian.html
+      dest: /var/www/html/index.html
+
+  - name: "4/4 restart Nginx"
+    systemd:
+      name: nginx
+      state: restarted
+```
+![png](screen/screen_2_14.png)
+
+##### Мониторинг. Zabbix. Zabbix-agent.
+
+Разворачиваю Zabbix.
+```ansible
+---
+- name: "download and install zabbix"
+  hosts: zabbix
+  become: true
+
+  tasks:
+  - name: "1/8 apt update"
+    apt:
+      update_cache: yes
+
+  - name: "2/8 install  postgresql"
+    apt:
+      name: postgresql
+      state: latest
+
+  - name: "3/8 download zabbix"
+    get_url:
+      url: https://repo.zabbix.com/zabbix/7.0/ubuntu/pool/main/z/zabbix-release/zabbix-release_latest_7.0+ubuntu22.04_all.deb
+      dest: "/home/serg"
+
+  - name: "4/8 dpkg -i zabbix"
+    apt:
+      deb: /home/serg/zabbix-release_latest_7.0+ubuntu22.04_all.deb
+
+
+  - name: "5/8 apt update"
+    apt:
+      update_cache: yes
+
+  - name: "6/8 install zabbix-server-pgsql, zabbix-frontend-php, php8.1-pgsql, zabbix-apache-conf, zabbix-sql-scripts, zabbix-agent"
+    apt:
+      name:
+      - zabbix-server-pgsql
+      - zabbix-frontend-php
+      - php8.1-pgsql
+      - zabbix-apache-conf
+      - zabbix-sql-scripts
+      - zabbix-agent
+      state: present
+
+  - name: "7/8 create user and database zabbix, import initial schema and data, configure DBPassword"
+    shell: |
+      su - postgres -c 'psql --command "CREATE USER zabbix WITH PASSWORD '\'123456789\'';"'
+      su - postgres -c 'psql --command "CREATE DATABASE zabbix OWNER zabbix;"'
+      zcat /usr/share/zabbix-sql-scripts/postgresql/server.sql.gz | sudo -u zabbix psql zabbix
+      sed -i 's/# DBPassword=/DBPassword=123456789/g' /etc/zabbix/zabbix_server.conf
+
+  - name: "8/8 restart and enable zabbix-server and apache"
+    shell: |
+      systemctl restart zabbix-server apache2
+      systemctl enable zabbix-server apache2
+```
+![png](screen/18.png)
+
+На каждую ВМ устанавливаю Zabbix Agent, настраиваю агенты на отправление метрик в Zabbix.
+
+```ansible
+---
+- name: "download and install zabbix-agent"
+  hosts: all
+  become: true
+
+  tasks:
+  - name: "1/7 apt update"
+    apt:
+      upgrade: yes
+      update_cache: yes
+
+  - name: "2/7 download zabbix-agent"
+    get_url:
+      url: https://repo.zabbix.com/zabbix/7.0/ubuntu/pool/main/z/zabbix-release/zabbix-release_latest_7.0+ubuntu22.04_all.deb
+      dest: "/home/serg"
+
+  - name: "3/7 dpkg -i zabbix-agent"
+    apt:
+      deb: /home/serg/zabbix-release_latest_7.0+ubuntu22.04_all.deb
+
+  - name: "4/7 apt update"
+    apt:
+      update_cache: yes
+
+  - name: "5/7 apt install zabbix-agent"
+    apt:
+      name: zabbix-agent
+
+  - name: "6/7 ip replacement in zabbix_agentd.conf"
+    shell: |
+      sed -i 's/Server=127.0.0.1/Server=192.168.30.4/g' /etc/zabbix/zabbix_agentd.conf
+
+  - name: "7/7 restart and enable zabbix-agent"
+    shell: |
+      systemctl restart zabbix-agent
+      systemctl enable zabbix-agent
+```
+![png](screen/19.png)
+
+##### Логи. Elasticsearch. Kibana. Filebeat.
+
+Разворачиваю на ВМ Elasticsearch.
+```ansible
+---
+- name: "download and install elasticsearch"
+  hosts: elasticsearch
+  become: true
+
+  tasks:
+  - name: "1/5 install gnupg and apt-transport-https"
+    apt:
+      name:
+      - gnupg
+      - apt-transport-https
+      state: present
+
+  - name: "2/5 download elasticsearch"
+    get_url:
+      url: https://mirror.yandex.ru/mirrors/elastic/7/pool/main/e/elasticsearch/elasticsearch-7.17.9-amd64.deb
+      dest: "/home/serg"
+
+  - name: "3/5 dpkg -i elasticsearch"
+    apt:
+      deb: /home/serg/elasticsearch-7.17.9-amd64.deb
+
+  - name: "4/5 elasticsearch configuration 'elasticsearch.yml'"
+    copy:
+      src: ~/elasticsearch.yml
+      dest: /etc/elasticsearch/elasticsearch.yml
+
+  - name: "5/5 enable and start elasticsearch"
+    shell: |
+      systemctl daemon-reload
+      systemctl enable elasticsearch.service
+      systemctl start elasticsearch.service
+```
+
+![png](screen/20.png) 
+Разворачиваю на другой ВМ Kibana, конфигурирую соединение с Elasticsearch и добавляю параметр `server.publicBaseUrl: "http://158.160.170.10:5601"` в конфигурационный файл `kibana.yml` 
+![png](screen/21.png) 
+
+```ansible
+---
+- name: "download and install kibana"
+  hosts: kibana
+  become: true
+
+  tasks:
+  - name: "1/5 install gnupg and apt-transport-https"
+    apt:
+      name:
+      - gnupg
+      - apt-transport-https
+      state: present
+
+  - name: "2/5 download kibana"
+    get_url:
+      url: https://mirror.yandex.ru/mirrors/elastic/7/pool/main/k/kibana/kibana-7.17.9-amd64.deb
+      dest: "/home/serg"
+
+  - name: "3/5 dpkg -i kibana"
+    apt:
+      deb: /home/serg/kibana-7.17.9-amd64.deb
+
+  - name: "4/5 kibana configuration 'kibana.yml'"
+    copy:
+      src: ~/kibana.yml
+      dest: /etc/kibana/kibana.yml
+
+  - name: "5/5 enable and start kibana"
+    shell: |
+      systemctl daemon-reload
+      systemctl enable kibana.service
+      systemctl start kibana.service
+```
+![png](screen/22.png)
+
+Устанавливаю Filebeat в ВМ к веб-серверам, настраиваю на отправку access.log, error.log nginx в Elasticsearch.
+
+```ansible
+---
+- name: "download and install filebeat for nginx-web-1"
+  hosts: nginx-web-1
+  become: true
+
+  tasks:
+  - name: "1/5 install gnupg and apt-transport-https"
+    apt:
+      name:
+      - gnupg
+      - apt-transport-https
+      state: present
+
+  - name: "2/5 download filebeat"
+    get_url:
+      url: https://mirror.yandex.ru/mirrors/elastic/7/pool/main/f/filebeat/filebeat-7.17.9-amd64.deb
+      dest: "/home/serg"
+
+  - name: "3/5 dpkg -i filebeat"
+    apt:
+      deb: /home/serg/filebeat-7.17.9-amd64.deb
+
+  - name: "4/5 copy config file for filebeat"
+    copy:
+      src: ~/filebeat.yml
+      dest: /etc/filebeat/
+
+  - name: "5/5 enable and start filebeat"
+    shell: |
+      systemctl deamon-reload
+      systemctl enable filebeat.service
+      systemctl start filebeat.service
+
+```
+![png](screen/23.png)
+```ansible
+---
+- name: "download and install filebeat for nginx-web-2"
+  hosts: nginx-web-2
+  become: true
+
+  tasks:
+  - name: "1/5 install gnupg and apt-transport-https"
+    apt:
+      name:
+      - gnupg
+      - apt-transport-https
+      state: present
+
+  - name: "2/5 download filebeat"
+    get_url:
+      url: https://mirror.yandex.ru/mirrors/elastic/7/pool/main/f/filebeat/filebeat-7.17.9-amd64.deb
+      dest: "/home/serg"
+
+  - name: "3/5 dpkg -i filebeat"
+    apt:
+      deb: /home/serg/filebeat-7.17.9-amd64.deb
+
+  - name: "4/5 copy config file for filebeat"
+    copy:
+      src: ~/filebeat2.yml
+      dest: /etc/filebeat/filebeat.yml
+
+  - name: "5/5 enable and start filebeat"
+    shell: |
+      systemctl deamon-reload
+      systemctl enable filebeat.service
+      systemctl start filebeat.service
+```
+![png](screen/24.png)
+
+#### Все сервисы через ansible развернуты.
+
+---
+
+### 2.6 Проверка и настройка ресурсов для выполнения задач дипломной работы.
+
+##### Сайт.
+Протестирую работу сайта с ip балансировщика.
+```bash
+curl -v 158.160.128.179:80
+```
+![png](screen/25.png)
+
+Этот же сайт с браузера.
+
+![png](screen/26.png)
+
+##### Мониторинг.
+Проверка работы Zabbix. Перехожу на страницу с Zabbix `http://158.160.195.137/zabbix`.
+
+![png](screen/27.png)
+![png](screen/28.png)
+![png](screen/29.png)
+![png](screen/30.png)
+![png](screen/31.png)
+![png](screen/32.png)
+![png](screen/33.png)
+
+Логин: Admin
+
+Пароль: zabbix
+
+![png](screen/34.png)
+
+Создаю Template, а точнее редактирую наиболее подходящий, с необходимыми метриками.
+
+![png](screen/35.png)
+
+Добавляю сервера.
+
+![png](screens/36.png)
+
+Настраиваю дешборды с отображением метрик, c минимальным набором 
+
+![png](screen/37.png)
+
+##### Логи.
+Захожу в kibana `http://158.160.170.10:5601/`
+
+![png](screen/38.png)
+
+Создаю Index patterns.
+
+![png](screen/39.png)
+![png](screen/40.png)
+![png](screen/41.png)
+![png](screen/42.png)
+
+Логи отправляются.
+
+![png](screen/43.png)
+![png](screen/44.png)
+
+##### Резервное копирование.
+Резервное копирование настроено на 1:30.
+
+![png](screen/14.png)
+![png](screen/15.png)
+![png](screen/16.png)
+
+[Ссылка на заключительную часть дипломной работы.](https://github.com/SergPonomarev76/diplom-sys45/blob/main/3.%20Заключительная%20часть%20дипломной%20работы/README.md)
+---
