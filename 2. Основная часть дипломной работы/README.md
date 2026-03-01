@@ -1084,9 +1084,8 @@ curl -v 158.160.143.144:80
 ##### Резервное копирование.
 Резервное копирование настроено на 1:30.
 
-![png](screen/14.png)
-![png](screen/15.png)
-![png](screen/16.png)
+![png](screen/screen_2_38.png)
+![png](screen/screen_2_39.png)
 
 [Ссылка на заключительную часть дипломной работы.](https://github.com/SergPonomarev76/diplom-sys45/blob/main/3.%20Заключительная%20часть%20дипломной%20работы/README.md)
 ---
