@@ -187,3 +187,113 @@ resource "yandex_alb_load_balancer" "nginx-balancer" {
   }
 }
 ```
+
+##### Мониторинг. Zabbix. Zabbix-agent.
+- Создать ВМ, развернуть на ней Zabbix. На каждую ВМ установить Zabbix Agent, настроить агенты на отправление метрик в Zabbix.
+```terraform
+###############
+## Zabbix #####
+###############
+resource "yandex_compute_instance" "zabbix" {
+  name  = "zabbix"
+  hostname = "zabbix"
+  zone  = yandex_vpc_subnet.d-subnet-diplom.zone
+  platform_id     = "standard-v3"
+  resources {
+    cores         = 2
+    core_fraction = 20
+    memory        = 2
+  }
+
+  boot_disk {
+    initialize_params {
+      image_id = "fd8k22q9mlprdarduk0o"
+      size     = 10
+    }
+  }
+
+  network_interface {
+    subnet_id = "${yandex_vpc_subnet.d-subnet-diplom.id}"
+    nat = true
+    ipv4 = true
+    ip_address = "192.168.30.4"
+    security_group_ids = [yandex_vpc_security_group.bastion-security-local.id, yandex_vpc_security_group.zabbix-security.id]
+  }
+
+  metadata = {
+    user-data = "${file("./meta.yaml")}"
+  }
+}
+```
+
+##### Логи. Elasticsearch. Kibana. Filebeat.
+- Cоздать ВМ, развернуть на ней Elasticsearch. Установить Filebeat в ВМ к веб-серверам, настроить на отправку access.log, error.log nginx в Elasticsearch.
+- Создать ВМ, развернуть на ней Kibana, сконфигурировать соединение с Elasticsearch.
+```terraform
+######################
+## Elasticsearch #####
+######################
+resource "yandex_compute_instance" "elasticsearch" {
+  name  = "elasticsearch"
+  hostname = "elasticsearch"
+  zone  = yandex_vpc_subnet.a-subnet-diplom.zone
+  platform_id     = "standard-v3"
+  resources {
+    cores         = 2
+    core_fraction = 20
+    memory        = 4
+  }
+
+  boot_disk {
+    initialize_params {
+      image_id = "fd8k22q9mlprdarduk0o"
+      size     = 10
+    }
+  }
+
+  network_interface {
+    subnet_id = "${yandex_vpc_subnet.a-subnet-diplom.id}"
+    ipv4 = true
+    ip_address = "192.168.10.4"
+    security_group_ids = [yandex_vpc_security_group.bastion-security-local.id, yandex_vpc_security_group.elasticsearch-security.id, yandex_vpc_security_group.kibana-security.id, yandex_vpc_security_group.filebeat-security.id]
+  }
+
+  metadata = {
+    user-data = "${file("./meta.yaml")}"
+  }
+}
+
+###############
+## Kibana #####
+###############
+resource "yandex_compute_instance" "kibana" {
+  name  = "kibana"
+  hostname = "kibana"
+  zone  = yandex_vpc_subnet.d-subnet-diplom.zone
+  platform_id     = "standard-v3"
+  resources {
+    cores         = 2
+    core_fraction = 20
+    memory        = 2
+  }
+
+  boot_disk {
+    initialize_params {
+      image_id = "fd8k22q9mlprdarduk0o"
+      size     = 10
+    }
+  }
+
+  network_interface {
+    subnet_id = "${yandex_vpc_subnet.d-subnet-diplom.id}"
+    nat = true
+    ipv4 = true
+    ip_address = "192.168.30.5"
+    security_group_ids = [yandex_vpc_security_group.bastion-security-local.id, yandex_vpc_security_group.elasticsearch-security.id, yandex_vpc_security_group.kibana-security.id, yandex_vpc_security_group.filebeat-security.id]
+  }
+
+  metadata = {
+    user-data = "${file("./meta.yaml")}"
+  }
+}
+```
